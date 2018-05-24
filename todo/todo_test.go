@@ -2,6 +2,14 @@ package todo
 
 import "testing"
 
+const (
+	host     = "localhost"
+	port     = 5432
+	user     = "postgres"
+	password = ""
+	dbname   = "todo-db"
+)
+
 func TestCreate(t *testing.T) {
 
 }
