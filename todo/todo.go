@@ -15,6 +15,11 @@ const (
 	dbname   = "todo_db"
 )
 
+type taskStruct struct {
+	task_id int
+	task    string
+}
+
 func dbConn(user, password, dbname string) *sql.DB {
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
 		user, password, dbname)

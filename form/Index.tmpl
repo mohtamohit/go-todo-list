@@ -1,0 +1,29 @@
+{{ define "Index" }}
+
+    {{ template "Header" }}
+        {{ template "Menu" }}
+
+        <table border="1">
+            <thead>
+            <tr>
+                <td>Task Id</td>
+                <td>Name</td>
+            </tr>
+            </thead>
+
+            <tbody>
+            {{ range . }}
+            <tr>
+                <td>{{ .task_id }}</td>
+                <td>{{ .task }}</td>
+                <td><a href="/update?id={{ .task_id }}">Update</a></td>
+                <td><a href="/delete?id={{ .task_id }}">Delete</a></td>
+            </tr>
+            {{ end }}
+
+            </tbody>
+        </table>
+
+    {{ template "Footer" }}
+
+{{ end }}
