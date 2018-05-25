@@ -83,3 +83,34 @@ func ShowAll() error {
 	}
 	return err
 }
+
+func Update(task_id int, task string) error {
+	db := dbConn(user, password, dbname)
+	defer db.Close()
+
+	statement, err := db.Prepare("UPDATE todo_db SET task = $1 WHERE task_id = $2;")
+	if err != nil {
+		fmt.Println("Enountered error: ", err)
+		return err
+	}
+	row := statement.QueryRow(task, task_id)
+	row.Scan(&task_id)
+	return err
+}
+
+func Delete(task_id int) error {
+	db := dbConn(user, password, dbname)
+	defer db.Close()
+
+	statement, err := db.Prepare("DELETE FROM todo_db WHERE task_id = $1;")
+
+	if err != nil {
+		fmt.Println("Enountered error: ", err)
+		return err
+	}
+
+	row := statement.QueryRow(task_id)
+	row.Scan(&task_id)
+
+	return err
+}

@@ -7,8 +7,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const task = "some random testing task"
-const taskID = 48
+const (
+	task         = "some random testing task"
+	taskID       = 48
+	updateTask   = "updated testing task"
+	updateTaskID = 50
+	deleteTaskID = 51
+)
 
 func TestCreate(t *testing.T) {
 	taskID, err := Create(task)
@@ -34,9 +39,11 @@ func TestShowAll(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-
+	err := Update(updateTaskID, updateTask)
+	require.NoError(t, err)
 }
 
 func TestDelete(t *testing.T) {
-
+	err := Delete(deleteTaskID)
+	require.NoError(t, err)
 }
