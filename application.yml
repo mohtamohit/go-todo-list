@@ -3,7 +3,7 @@ ENVIRONMENT: "dev"
 APP_PORT: "8080"
 LOG_LEVEL: "info"
 
-DB_NAME: "todo-db"
+DB_NAME: "todo_db"
 DB_HOST: "localhost"
 DB_USER: "postgres"
 DB_PASSWORD: ""

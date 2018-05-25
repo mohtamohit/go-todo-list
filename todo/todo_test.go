@@ -1,17 +1,17 @@
 package todo
 
-import "testing"
+import (
+	"testing"
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = ""
-	dbname   = "todo-db"
+	"github.com/stretchr/testify/require"
 )
 
-func TestCreate(t *testing.T) {
+const task = "some random testing task"
 
+func TestCreate(t *testing.T) {
+	taskID, err := Create(task)
+	require.NotNil(t, taskID)
+	require.NoError(t, err)
 }
 
 func TestRead(t *testing.T) {
