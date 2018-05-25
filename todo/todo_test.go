@@ -7,7 +7,7 @@ import (
 )
 
 const task = "some random testing task"
-const taskID = 1
+const taskID = 48
 
 func TestCreate(t *testing.T) {
 	taskID, err := Create(task)
@@ -17,10 +17,10 @@ func TestCreate(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestRead(t *testing.T) {
-	// task, err := Read(taskID)
-	// require.NotNil(t, task)
-	// require.NoError(t, err)
+func TestReadIfTaskExist(t *testing.T) {
+	task, err := Read(taskID)
+	require.Equal(t, task, "some random testing task")
+	require.NoError(t, err)
 }
 
 func TestUpdate(t *testing.T) {
