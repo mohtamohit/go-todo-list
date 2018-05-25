@@ -36,13 +36,8 @@ func Create(task string) (int, error) {
 		fmt.Println("Encountered Error: ", err)
 		return 0, err
 	}
-	row, err := statement.Query(task)
+	row := statement.QueryRow(task)
 	row.Scan(&task_id)
-
-	if err != nil {
-		fmt.Println("Encountered Error: ", err)
-		return 0, err
-	}
 	return task_id, err
 }
 
@@ -55,24 +50,12 @@ func Read(task_id int) (string, error) {
 		fmt.Println("Enountered error: ", err)
 		return "", err
 	}
-	row, err := statement.Query(task_id)
-	if err != nil {
-		fmt.Println("Encountered error: ", err)
-		return "", err
-	}
-
+	row := statement.QueryRow(task_id)
 	var task string
-	i := 0
-	for row.Next() {
-		i++
-		row.Scan(&task)
-		fmt.Println("", i, " ", task)
-	}
-
+	row.Scan(&task)
 	if task == "" {
 		return task, fmt.Errorf("Task Id is non-existent")
 	}
-
 	return task, err
 }
 

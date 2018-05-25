@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,8 +12,7 @@ const taskID = 48
 
 func TestCreate(t *testing.T) {
 	taskID, err := Create(task)
-
-	// task id is coming 0 all the time although insertion in db is executing fine
+	fmt.Println("b ", taskID)
 	require.NotNil(t, taskID)
 	require.NoError(t, err)
 }
