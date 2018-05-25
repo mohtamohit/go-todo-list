@@ -17,9 +17,19 @@ func TestCreate(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestReadIfTaskExist(t *testing.T) {
+func TestReadForExistingTask(t *testing.T) {
 	task, err := Read(taskID)
 	require.Equal(t, task, "some random testing task")
+	require.NoError(t, err)
+}
+
+func TestReadForNoTask(t *testing.T) {
+	_, err := Read(10000000)
+	require.EqualError(t, err, "Task Id is non-existent")
+}
+
+func TestShowAll(t *testing.T) {
+	err := ShowAll()
 	require.NoError(t, err)
 }
 
