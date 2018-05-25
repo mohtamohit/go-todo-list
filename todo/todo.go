@@ -3,6 +3,8 @@ package todo
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -25,16 +27,23 @@ func Create(task string) (int, error) {
 	defer db.Close()
 
 	if err != nil {
-		fmt.Errorf("Encountered error: ", err)
+		fmt.Println("Encountered error:", err)
 	}
 
-	var taskID int
-	err = db.QueryRow("INSERT INTO todo_db(task) VALUES ($1);", task).Scan(&taskID)
+	var task_id int
+	statement, err := db.Prepare("INSERT INTO todo_db(task) VALUES($1);")
 	if err != nil {
-		fmt.Errorf("Error: ", err)
+		fmt.Println("Encountered Error: ", err)
 	}
-	return taskID, err
+	row, err := statement.Query(task)
+	row.Scan(&task_id)
+
+	if err != nil {
+		fmt.Println("Encountered Error: ", err)
+	}
+	return task_id, err
 }
 
-func Read(taskID int) {
+func Read(task_id int) (string, error) {
+	return "", nil
 }
