@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
+	"practice/go-todo-list/config"
 	"practice/go-todo-list/todo"
 )
 
 func main() {
-	// config.Load()
+	config.Load()
 
-	// app.Init()
-	// defer app.Close()
+	startApp()
+}
 
+func startApp() {
 	var choice string
 
 	for {
