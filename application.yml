@@ -7,7 +7,7 @@ DB_NAME: "todo_db"
 DB_HOST: "localhost"
 DB_USER: "postgres"
 DB_PASSWORD: ""
-DB_PORT: "1705"
+DB_PORT: "5432"
 
 
 

@@ -3,6 +3,7 @@ package todo
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -31,14 +32,14 @@ func Create(task string) (int, error) {
 	defer db.Close()
 
 	var task_id int
-	statement, err := db.Prepare("INSERT INTO todo_db(task) VALUES($1);")
+	statement, err := db.Prepare("INSERT INTO todo_db(task, timestamp) VALUES($1, $2);")
 	if err != nil {
 		fmt.Println("Encountered Error: ", err)
 		return 0, err
 	}
-	row := statement.QueryRow(task)
+	row := statement.QueryRow(task, time.Now())
 	row.Scan(&task_id)
-	return task_id, err
+	return task_id, nil
 }
 
 func Read(task_id int) (string, error) {
