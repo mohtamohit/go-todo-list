@@ -1,7 +1,6 @@
 package todo
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -9,7 +8,7 @@ import (
 
 const (
 	task         = "some random testing task"
-	taskID       = 48
+	taskID       = 1
 	updateTask   = "updated testing task"
 	updateTaskID = 50
 	deleteTaskID = 51
@@ -17,15 +16,14 @@ const (
 
 func TestCreate(t *testing.T) {
 	taskID, err := Create(task)
-	fmt.Println("b ", taskID)
 	require.NotNil(t, taskID)
 	require.NoError(t, err)
 }
 
 func TestReadForExistingTask(t *testing.T) {
 	task, err := Read(taskID)
-	require.Equal(t, task, "some random testing task")
 	require.NoError(t, err)
+	require.Equal(t, task, "some random testing task")
 }
 
 func TestReadForNoTask(t *testing.T) {
