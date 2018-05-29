@@ -39,7 +39,7 @@ db.create:
 	createdb -p $(DB_PORT) -Opostgres -Eutf8 $(DB_NAME)
 
 db.migrate:
-	$(APP_EXECUTABLE) migrate
+	$(APP_EXECUTEABLE) migrate
 
 db.drop:
 	dropdb -p $(DB_PORT) --if-exists -Upostgres $(DB_NAME)

@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"practice/go-todo-list/config"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,33 +16,38 @@ const (
 )
 
 func TestCreate(t *testing.T) {
-	taskID, err := Create(task)
-	require.NotNil(t, taskID)
+	config.Load()
+	_, err := Create(task)
 	require.NoError(t, err)
 }
 
 func TestReadForExistingTask(t *testing.T) {
+	config.Load()
 	task, err := Read(taskID)
 	require.NoError(t, err)
 	require.Equal(t, task, "some random testing task")
 }
 
 func TestReadForNoTask(t *testing.T) {
+	config.Load()
 	_, err := Read(10000000)
 	require.EqualError(t, err, "Task Id is non-existent")
 }
 
 func TestShowAll(t *testing.T) {
+	config.Load()
 	err := ShowAll()
 	require.NoError(t, err)
 }
 
 func TestUpdate(t *testing.T) {
+	config.Load()
 	err := Update(updateTaskID, updateTask)
 	require.NoError(t, err)
 }
 
 func TestDelete(t *testing.T) {
+	config.Load()
 	err := Delete(deleteTaskID)
 	require.NoError(t, err)
 }
