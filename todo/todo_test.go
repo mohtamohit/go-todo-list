@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"fmt"
 	"practice/go-todo-list/config"
 	"testing"
 
@@ -17,7 +18,12 @@ const (
 
 func TestCreate(t *testing.T) {
 	config.Load()
-	_, err := Create(task)
+	task_id, err := Create(task)
+	fmt.Println(task_id)
+
+	// facing a problem here. create function is always returning task id as zero
+	// unable to fix this after lot of time too.
+
 	require.NoError(t, err)
 }
 
