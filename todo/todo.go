@@ -3,7 +3,6 @@ package todo
 import (
 	"fmt"
 	"practice/go-todo-list/db"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -13,15 +12,23 @@ func Create(task string) (int, error) {
 	// db := dbConn(user, password, dbname)
 	defer db.Close()
 
-	var task_id int
-	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2);")
+	var task_id, dummyVar, mxid int
+
+	// add some code to count total number of rows in db
+	s, err := db.Prepare("SELECT MAX(task_id) AS mxid FROM todo_table;")
+	row := s.QueryRow()
+	row.Scan(&mxid)
+
+	statement, err := db.Prepare("INSERT INTO todo_table(task_id, task, timestamp) VALUES($1, $2, $3);")
 	if err != nil {
 		fmt.Println("Encountered Error: ", err)
 		return 0, err
 	}
-	row := statement.QueryRow(task, time.Now())
-	row.Scan(&task_id)
-	return task_id, nil
+
+	task_id = mxid
+	rows := statement.QueryRow(task_id+1, task, "2018-06-18")
+	rows.Scan(&dummyVar)
+	return task_id + 1, nil
 }
 
 func Read(task_id int) (string, error) {
