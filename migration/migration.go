@@ -28,6 +28,7 @@ func Init() {
 }
 
 func Up() error {
+	// runner. up makes it as up as possible
 	if err := runner.Up(); err != nil {
 		return fmt.Errorf("Error while migration up: %v", err)
 	}

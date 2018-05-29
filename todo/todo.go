@@ -8,34 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// const (
-// 	host       = "localhost"
-// 	port       = 5432
-// 	user       = "postgres"
-// 	password   = ""
-// 	dbname     = "todo_db"
-// 	driverName = "postgres"
-// )
-
-// func dbConn(user, password, dbname string) *sql.DB {
-// 	// dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-// 	// 	user, password, dbname)
-
-// 	dbinfo := "postgres://localhost:5432/postgres?sslmode=disable"
-// 	db, err := sql.Open(driverName, dbinfo)
-// 	// driver, err := postgres.WithInstance(db, &postgres.Config{})
-// 	// m, err := migrate.NewWithDatabaseInstance(
-// 	// 	"file:///migrations",
-// 	// 	"postgres", driver)
-// 	// m.Steps(2)
-
-// 	if err != nil {
-// 		fmt.Println("Encountered error: ", err)
-// 		panic(err)
-// 	}
-// 	return db
-// }
-
 func Create(task string) (int, error) {
 	db := db.InitDB()
 	// db := dbConn(user, password, dbname)
