@@ -20,7 +20,6 @@ func InitDB() *sql.DB {
 		log.Fatalf("failed to load the database: %s", err)
 	}
 	//	fmt.Println(err.Error)
-	fmt.Println("Ping ke upar!!")
 	if err = db.Ping(); err != nil {
 		log.Fatalf("ping to database failed :%s", err)
 	}
