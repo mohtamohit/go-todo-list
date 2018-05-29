@@ -14,7 +14,7 @@ func Create(task string) (int, error) {
 	defer db.Close()
 
 	var task_id int
-	statement, err := db.Prepare("INSERT INTO todo_db(task, timestamp) VALUES($1, $2);")
+	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2);")
 	if err != nil {
 		fmt.Println("Encountered Error: ", err)
 		return 0, err
@@ -29,7 +29,7 @@ func Read(task_id int) (string, error) {
 	db := db.InitDB()
 	defer db.Close()
 
-	statement, err := db.Prepare("SELECT task FROM todo_db WHERE task_id= $1;")
+	statement, err := db.Prepare("SELECT task FROM todo_table WHERE task_id= $1;")
 	if err != nil {
 		fmt.Println("Enountered error: ", err)
 		return "", err
@@ -48,7 +48,7 @@ func ShowAll() error {
 	db := db.InitDB()
 	defer db.Close()
 
-	statement, err := db.Prepare("SELECT task FROM todo_db;")
+	statement, err := db.Prepare("SELECT task FROM todo_table;")
 	if err != nil {
 		fmt.Println("Enountered error: ", err)
 		return err
@@ -74,7 +74,7 @@ func Update(task_id int, task string) error {
 	db := db.InitDB()
 	defer db.Close()
 
-	statement, err := db.Prepare("UPDATE todo_db SET task = $1 WHERE task_id = $2;")
+	statement, err := db.Prepare("UPDATE todo_table SET task = $1 WHERE task_id = $2;")
 	if err != nil {
 		fmt.Println("Enountered error: ", err)
 		return err
@@ -89,7 +89,7 @@ func Delete(task_id int) error {
 	db := db.InitDB()
 	defer db.Close()
 
-	statement, err := db.Prepare("DELETE FROM todo_db WHERE task_id = $1;")
+	statement, err := db.Prepare("DELETE FROM todo_table WHERE task_id = $1;")
 
 	if err != nil {
 		fmt.Println("Enountered error: ", err)

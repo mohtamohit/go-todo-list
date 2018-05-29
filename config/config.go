@@ -20,10 +20,9 @@ func Load() {
 	viper.SetDefault("APP_PORT", "8080")
 	viper.SetDefault("LOG_LEVEL", "error")
 
+	viper.SetConfigName("application")
 	if os.Getenv("ENVIRONMENT") == "test" {
 		viper.SetConfigName("test")
-	} else {
-		viper.SetConfigName("application")
 	}
 
 	viper.AddConfigPath("./")
