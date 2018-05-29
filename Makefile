@@ -3,8 +3,8 @@ all: build-deps build test
 
 ALL_PACKAGES = $(shell go list ./...)
 UNIT_TEST_PACKAGES = $(shell go list ./...)
-DB_NAME = "todo_db"
-TEST_DB_NAME = "todo_test_db"
+DB_NAME = "todo_db_dev"
+TEST_DB_NAME = "todo_db_test"
 TEST_DB_PORT = 5432
 DB_PORT = 5432
 APP_EXECUTEABLE = "out/go-todo"
@@ -33,6 +33,22 @@ fmt:
 vet:
 	go vet ./...
 
+db.setup: db.create db.migrate
+
+db.create:
+	createdb -p $(DB_PORT) -Opostgres -Eutf8 $(DB_NAME)
+
+db.migrate:
+	$(APP_EXECUTABLE) migrate
+
+db.drop:
+	dropdb -p $(DB_PORT) --if-exists -Upostgres $(DB_NAME)
+
+db.reset: db.drop db.create db.migrate
+
+db.rollback:
+	$(APP_EXECUTABLE) rollback
+
 test: testdb.reset
 	ENVIRONMENT=test go test $(UNIT_TEST_PACKAGES) 
 
@@ -45,6 +61,8 @@ testdb.create:
 	createdb -p $(TEST_DB_PORT) -Opostgres -Eutf8 $(TEST_DB_NAME)
 
 testdb.migrate:
-	ENVIRONMENT=TEST $(APP_EXECUTEABLE) migrate
+	ENVIRONMENT=test $(APP_EXECUTEABLE) migrate
 
+testdb.rollback:
+	ENVIRONMENT=test $(APP_EXECUTEABLE) rollback
 

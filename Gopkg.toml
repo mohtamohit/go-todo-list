@@ -71,10 +71,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "source.golabs.io/core/alfred"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/afex/hystrix-go"
 
 [[constraint]]
