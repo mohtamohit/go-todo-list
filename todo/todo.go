@@ -1,34 +1,44 @@
 package todo
 
 import (
-	"database/sql"
 	"fmt"
+	"practice/go-todo-list/db"
 	"time"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = ""
-	dbname   = "todo_db"
-)
+// const (
+// 	host       = "localhost"
+// 	port       = 5432
+// 	user       = "postgres"
+// 	password   = ""
+// 	dbname     = "todo_db"
+// 	driverName = "postgres"
+// )
 
-func dbConn(user, password, dbname string) *sql.DB {
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		user, password, dbname)
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Encountered error: ", err)
-		panic(err)
-	}
-	return db
-}
+// func dbConn(user, password, dbname string) *sql.DB {
+// 	// dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+// 	// 	user, password, dbname)
+
+// 	dbinfo := "postgres://localhost:5432/postgres?sslmode=disable"
+// 	db, err := sql.Open(driverName, dbinfo)
+// 	// driver, err := postgres.WithInstance(db, &postgres.Config{})
+// 	// m, err := migrate.NewWithDatabaseInstance(
+// 	// 	"file:///migrations",
+// 	// 	"postgres", driver)
+// 	// m.Steps(2)
+
+// 	if err != nil {
+// 		fmt.Println("Encountered error: ", err)
+// 		panic(err)
+// 	}
+// 	return db
+// }
 
 func Create(task string) (int, error) {
-	db := dbConn(user, password, dbname)
+	db := db.InitDB()
+	// db := dbConn(user, password, dbname)
 	defer db.Close()
 
 	var task_id int
@@ -43,7 +53,8 @@ func Create(task string) (int, error) {
 }
 
 func Read(task_id int) (string, error) {
-	db := dbConn(user, password, dbname)
+	// db := dbConn(user, password, dbname)
+	db := db.InitDB()
 	defer db.Close()
 
 	statement, err := db.Prepare("SELECT task FROM todo_db WHERE task_id= $1;")
@@ -61,7 +72,8 @@ func Read(task_id int) (string, error) {
 }
 
 func ShowAll() error {
-	db := dbConn(user, password, dbname)
+	// db := dbConn(user, password, dbname)
+	db := db.InitDB()
 	defer db.Close()
 
 	statement, err := db.Prepare("SELECT task FROM todo_db;")
@@ -86,7 +98,8 @@ func ShowAll() error {
 }
 
 func Update(task_id int, task string) error {
-	db := dbConn(user, password, dbname)
+	// db := dbConn(user, password, dbname)
+	db := db.InitDB()
 	defer db.Close()
 
 	statement, err := db.Prepare("UPDATE todo_db SET task = $1 WHERE task_id = $2;")
@@ -100,7 +113,8 @@ func Update(task_id int, task string) error {
 }
 
 func Delete(task_id int) error {
-	db := dbConn(user, password, dbname)
+	// db := dbConn(user, password, dbname)
+	db := db.InitDB()
 	defer db.Close()
 
 	statement, err := db.Prepare("DELETE FROM todo_db WHERE task_id = $1;")

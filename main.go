@@ -2,12 +2,47 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"practice/go-todo-list/app"
 	"practice/go-todo-list/config"
+	"practice/go-todo-list/migration"
 	"practice/go-todo-list/todo"
+
+	"github.com/urfave/cli"
 )
 
 func main() {
 	config.Load()
+	app.InitApp()
+
+	app := cli.NewApp()
+	app.Name = "todo-app"
+	app.Version = "0.0.1"
+	fmt.Println("####DEBUG####")
+
+	app.Commands = []cli.Command{
+		{
+			Name:        "migrate",
+			Description: "Run Database migration",
+			Action: func(c *cli.Context) error {
+				migration.Init()
+				return migration.Up()
+			},
+		},
+		{
+			Name:        "rollback",
+			Description: "Rollback latest database migration",
+			Action: func(c *cli.Context) error {
+				migration.Init()
+				return migration.Down()
+			},
+		},
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		fmt.Println("###PANIC YAHA##")
+		panic(err)
+	}
 
 	startApp()
 }

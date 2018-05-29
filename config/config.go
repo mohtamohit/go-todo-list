@@ -1,34 +1,24 @@
 package config
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/spf13/viper"
 )
 
 var appConfig Config
 
-// Config stores the structure for all configuration that the app reads.
 type Config struct {
 	port int
-	db   DatabaseConfig
+	log  LogConfig
+	db   DbConfig
 }
 
-// Port returns the port used by the application.
-func Port() int { return appConfig.port }
-
-// Database returns the config for the postgres database.
-func Database() DatabaseConfig { return appConfig.db }
-
-// Load prepares the configuration for the app.
 func Load() {
 	viper.SetDefault("APP_PORT", "8080")
 	viper.SetDefault("LOG_LEVEL", "error")
-	viper.SetDefault("DB_QUERY_TIMEOUT_MS", 500)
-	viper.SetDefault("LOG_FORMAT", "json")
-	viper.SetDefault("DEFAULT_PHONE_REGION", "ID")
-	viper.SetDefault("DB_READ_TIMEOUT_MS", "100")
-	viper.SetDefault("DB_WRITE_TIMEOUT_MS", "500")
 
 	if os.Getenv("ENVIRONMENT") == "test" {
 		viper.SetConfigName("test")
@@ -45,7 +35,54 @@ func Load() {
 	viper.AutomaticEnv()
 
 	appConfig = Config{
-		port: mustGetInt("APP_PORT"),
-		db:   newDatabaseConfig(),
+		port: extractIntValue("APP_PORT"),
+		log: LogConfig{
+			logLevel: extractStringValue("LOG_LEVEL"),
+		},
+		db: DbConfig{
+			host:     extractStringValue("DB_HOST"),
+			port:     extractIntValue("DB_PORT"),
+			name:     extractStringValue("DB_NAME"),
+			user:     extractStringValue("DB_USER"),
+			password: extractStringValue("DB_PASSWORD"),
+		},
+	}
+}
+
+func Port() int {
+	return appConfig.port
+}
+
+func Log() LogConfig {
+	return appConfig.log
+}
+
+func Db() DbConfig {
+	return appConfig.db
+}
+
+func extractStringValue(key string) string {
+	checkPresenceOf(key)
+	return viper.GetString(key)
+}
+
+func extractBoolValue(key string) bool {
+	checkPresenceOf(key)
+	return viper.GetBool(key)
+}
+
+func extractIntValue(key string) int {
+	checkPresenceOf(key)
+	v, err := strconv.Atoi(viper.GetString(key))
+	if err != nil {
+		panic(fmt.Sprintf("key %s is not a valid Integer value", key))
+	}
+
+	return v
+}
+
+func checkPresenceOf(key string) {
+	if !viper.IsSet(key) {
+		panic(fmt.Sprintf("key %s is not set", key))
 	}
 }

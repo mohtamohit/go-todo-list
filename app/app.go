@@ -1,11 +1,9 @@
 package app
 
-func InitDB() {
+import "practice/go-todo-list/db"
 
-}
-
-func Init() {
-	InitDB()
+func InitApp() {
+	db.InitDB()
 }
 
 func Close() {
