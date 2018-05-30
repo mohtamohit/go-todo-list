@@ -30,7 +30,7 @@ func TestShouldLoadConfigFromEnvironment(t *testing.T) {
 		assert.NoError(t, err, "Unable to set os env for"+key)
 	}
 
-	expectedDbConfig := DbConfig{
+	expectedDbConfig := DBConfig{
 		host:     "localhost",
 		port:     5432,
 		name:     "todo_test",
