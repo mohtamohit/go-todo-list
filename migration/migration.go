@@ -19,7 +19,6 @@ var runner *migrate.Migrate
 func Init() {
 	connURL := config.Db().ConnString()
 	var err error
-	fmt.Println(migrationPath, connURL)
 	runner, err = migrate.New(migrationPath, connURL)
 	if err != nil {
 		panic(err)
