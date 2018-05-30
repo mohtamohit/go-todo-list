@@ -1,21 +1,19 @@
 package todo
 
 import (
+	"database/sql"
 	"fmt"
-	"practice/go-todo-list/db"
 
 	_ "github.com/lib/pq"
 )
 
-func Create(task string) (int, error) {
-	db := db.InitDB()
-	defer db.Close()
+func Create(dbIns *sql.DB, task string) (int, error) {
 	var task_id int
 
 	if task == "" {
 		return -1, fmt.Errorf("Cannot Create an empty task")
 	}
-	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
 	if err != nil {
 		return -1, err
 	}
@@ -25,11 +23,9 @@ func Create(task string) (int, error) {
 	return task_id, nil
 }
 
-func Read(task_id int) (string, error) {
-	db := db.InitDB()
-	defer db.Close()
+func Read(dbIns *sql.DB, task_id int) (string, error) {
 
-	statement, err := db.Prepare("SELECT task FROM todo_table WHERE task_id= $1;")
+	statement, err := dbIns.Prepare("SELECT task FROM todo_table WHERE task_id= $1;")
 	if err != nil {
 		return "", err
 	}
@@ -43,11 +39,9 @@ func Read(task_id int) (string, error) {
 	return task, err
 }
 
-func ShowAll() error {
-	db := db.InitDB()
-	defer db.Close()
+func ShowAll(dbIns *sql.DB) error {
 
-	statement, err := db.Prepare("SELECT task_id, task FROM todo_table;")
+	statement, err := dbIns.Prepare("SELECT task_id, task FROM todo_table;")
 	if err != nil {
 		return err
 	}
@@ -67,13 +61,12 @@ func ShowAll() error {
 	return err
 }
 
-func Update(task_id int, task string) error {
-	db := db.InitDB()
-	defer db.Close()
+func Update(dbIns *sql.DB, task_id int, task string) error {
+
 	if task == "" {
 		return fmt.Errorf("Cannot update with an empty task")
 	}
-	statement, err := db.Prepare("UPDATE todo_table SET task = $1 WHERE task_id = $2 RETURNING task_id;")
+	statement, err := dbIns.Prepare("UPDATE todo_table SET task = $1 WHERE task_id = $2 RETURNING task_id;")
 	if err != nil {
 		return err
 	}
@@ -81,11 +74,9 @@ func Update(task_id int, task string) error {
 	return row.Scan(&task_id)
 }
 
-func Delete(task_id int) error {
-	db := db.InitDB()
-	defer db.Close()
+func Delete(dbIns *sql.DB, task_id int) error {
 
-	statement, err := db.Prepare("DELETE FROM todo_table WHERE task_id = $1;")
+	statement, err := dbIns.Prepare("DELETE FROM todo_table WHERE task_id = $1 RETURNING task_id;")
 
 	if err != nil {
 		return err
