@@ -13,7 +13,7 @@ var appConfig Config
 type Config struct {
 	port int
 	log  LogConfig
-	db   DbConfig
+	db   DBConfig
 }
 
 func Load() {
@@ -38,7 +38,7 @@ func Load() {
 		log: LogConfig{
 			logLevel: extractStringValue("LOG_LEVEL"),
 		},
-		db: DbConfig{
+		db: DBConfig{
 			host:     extractStringValue("DB_HOST"),
 			port:     extractIntValue("DB_PORT"),
 			name:     extractStringValue("DB_NAME"),
@@ -56,7 +56,7 @@ func Log() LogConfig {
 	return appConfig.log
 }
 
-func Db() DbConfig {
+func Db() DBConfig {
 	return appConfig.db
 }
 
