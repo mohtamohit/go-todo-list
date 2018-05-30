@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"practice/go-todo-list/app"
 	"practice/go-todo-list/config"
 	"practice/go-todo-list/migration"
 	"practice/go-todo-list/todo"
@@ -14,7 +13,6 @@ import (
 
 func main() {
 	config.Load()
-	app.InitApp()
 
 	app := cli.NewApp()
 	app.Name = "todo-app"
