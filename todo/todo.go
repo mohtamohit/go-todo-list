@@ -3,6 +3,7 @@ package todo
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -17,7 +18,7 @@ func Create(dbIns *sql.DB, task string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	rows := statement.QueryRow(task, "2018-06-18")
+	rows := statement.QueryRow(task, fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
 	rows.Scan(&task_id)
 
 	return task_id, nil
