@@ -33,7 +33,7 @@ func TestShouldLoadConfigFromEnvironment(t *testing.T) {
 	expectedDbConfig := DbConfig{
 		host:     "localhost",
 		port:     5432,
-		name:     "todo_db_test",
+		name:     "todo_test",
 		password: "",
 		user:     "postgres",
 	}

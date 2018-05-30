@@ -67,7 +67,6 @@ func startApp(dbIns *sql.DB) {
 			var task string
 			task_byte, _, _ := bio.ReadLine()
 			task = string(task_byte)
-			// fmt.Scanln(&task)
 			task_id, err := todo.Create(dbIns, task)
 			if err != nil {
 				fmt.Println("Couldn't create this task. Check and try again.")

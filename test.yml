@@ -1,9 +1,6 @@
 ENVIRONMENT: "test"
 
-APP_PORT: "8080"
-LOG_LEVEL: "info"
-
-DB_NAME: "todo_db_test"
+DB_NAME: "todo_test"
 DB_HOST: "localhost"
 DB_USER: "postgres"
 DB_PASSWORD: ""

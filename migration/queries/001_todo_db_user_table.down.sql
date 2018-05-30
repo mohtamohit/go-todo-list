@@ -1,1 +1,1 @@
-drop table todo_table;
+drop table tasks;
