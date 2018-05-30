@@ -3,7 +3,8 @@ package db
 import (
 	"database/sql"
 	"log"
-	"practice/go-todo-list/config"
+
+	"github.com/mohtamohit/go-todo-list/config"
 )
 
 var db *sql.DB

@@ -2,11 +2,11 @@ package main
 
 import (
 	"os"
-	"practice/go-todo-list/app"
-	"practice/go-todo-list/config"
-	"practice/go-todo-list/db"
-	"practice/go-todo-list/migration"
 
+	"github.com/mohtamohit/go-todo-list/app"
+	"github.com/mohtamohit/go-todo-list/config"
+	"github.com/mohtamohit/go-todo-list/db"
+	"github.com/mohtamohit/go-todo-list/migration"
 	"github.com/urfave/cli"
 )
 
