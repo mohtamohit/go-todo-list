@@ -1,1 +1,1 @@
-ALTER TABLE todo_table ADD COLUMN timestamp date;
+ALTER TABLE tasks ADD COLUMN timestamp date;

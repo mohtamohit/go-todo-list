@@ -1,1 +1,1 @@
-ALTER TABLE todo_table DROP COLUMN timestamp;
+ALTER TABLE tasks DROP COLUMN timestamp;

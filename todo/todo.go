@@ -14,7 +14,7 @@ func Create(dbIns *sql.DB, task string) (int, error) {
 	if task == "" {
 		return -1, fmt.Errorf("Cannot Create an empty task")
 	}
-	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
 	if err != nil {
 		return -1, err
 	}
@@ -26,7 +26,7 @@ func Create(dbIns *sql.DB, task string) (int, error) {
 
 func Read(dbIns *sql.DB, task_id int) (string, error) {
 
-	statement, err := dbIns.Prepare("SELECT task FROM todo_table WHERE task_id= $1;")
+	statement, err := dbIns.Prepare("SELECT task FROM tasks WHERE task_id= $1;")
 	if err != nil {
 		return "", err
 	}
@@ -42,7 +42,7 @@ func Read(dbIns *sql.DB, task_id int) (string, error) {
 
 func ShowAll(dbIns *sql.DB) error {
 
-	statement, err := dbIns.Prepare("SELECT task_id, task FROM todo_table;")
+	statement, err := dbIns.Prepare("SELECT task_id, task FROM tasks;")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func Update(dbIns *sql.DB, task_id int, task string) error {
 	if task == "" {
 		return fmt.Errorf("Cannot update with an empty task")
 	}
-	statement, err := dbIns.Prepare("UPDATE todo_table SET task = $1 WHERE task_id = $2 RETURNING task_id;")
+	statement, err := dbIns.Prepare("UPDATE tasks SET task = $1 WHERE task_id = $2 RETURNING task_id;")
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func Update(dbIns *sql.DB, task_id int, task string) error {
 
 func Delete(dbIns *sql.DB, task_id int) error {
 
-	statement, err := dbIns.Prepare("DELETE FROM todo_table WHERE task_id = $1 RETURNING task_id;")
+	statement, err := dbIns.Prepare("DELETE FROM tasks WHERE task_id = $1 RETURNING task_id;")
 
 	if err != nil {
 		return err

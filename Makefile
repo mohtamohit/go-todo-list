@@ -3,11 +3,11 @@ all: build-deps build test
 
 ALL_PACKAGES = $(shell go list ./...)
 UNIT_TEST_PACKAGES = $(shell go list ./...)
-DB_NAME = "todo_db_dev"
-TEST_DB_NAME = "todo_db_test"
+DB_NAME = "todo_dev"
+TEST_DB_NAME = "todo_test"
 TEST_DB_PORT = 5432
 DB_PORT = 5432
-APP_EXECUTEABLE = "out/go-todo"
+APP_EXECUTEABLE = "out/todo"
 
 setup:
 	go get -u github.com/golang/dep/cmd/dep
