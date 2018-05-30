@@ -66,3 +66,4 @@ testdb.migrate:
 testdb.rollback:
 	ENVIRONMENT=test $(APP_EXECUTEABLE) rollback
 
+restart: build db.drop db.setup
