@@ -11,9 +11,11 @@ import (
 var appConfig Config
 
 type Config struct {
-	port int
-	log  LogConfig
-	db   DBConfig
+	port       int
+	log        LogConfig
+	appName    string
+	appVersion string
+	db         DBConfig
 }
 
 func Load() {
@@ -34,7 +36,9 @@ func Load() {
 	viper.AutomaticEnv()
 
 	appConfig = Config{
-		port: extractIntValue("APP_PORT"),
+		port:       extractIntValue("APP_PORT"),
+		appVersion: extractStringValue("APP_VERSION"),
+		appName:    extractStringValue("APP_NAME"),
 		log: LogConfig{
 			logLevel: extractStringValue("LOG_LEVEL"),
 		},
@@ -58,6 +62,14 @@ func Log() LogConfig {
 
 func Db() DBConfig {
 	return appConfig.db
+}
+
+func AppName() string {
+	return appConfig.appName
+}
+
+func AppVersion() string {
+	return appConfig.appVersion
 }
 
 func extractStringValue(key string) string {
