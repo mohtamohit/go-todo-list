@@ -3,11 +3,12 @@ package todo
 import (
 	"fmt"
 	"os"
-	"practice/go-todo-list/config"
-	"practice/go-todo-list/db"
+
 	"testing"
 	"time"
 
+	"github.com/mohtamohit/go-todo-list/config"
+	"github.com/mohtamohit/go-todo-list/db"
 	"github.com/stretchr/testify/assert"
 )
 

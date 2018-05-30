@@ -3,16 +3,16 @@ package migration
 import (
 	"fmt"
 	"os"
-	"practice/go-todo-list/config"
 
 	"github.com/golang-migrate/migrate"
 	_ "github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
 	_ "github.com/golang-migrate/migrate/source/github"
 	_ "github.com/lib/pq"
+	"github.com/mohtamohit/go-todo-list/config"
 )
 
-var migrationPath = "file://" + os.Getenv("GOPATH") + "/src/practice/go-todo-list/migration/queries/"
+var migrationPath = "file://" + os.Getenv("GOPATH") + "/src/github.com/mohtamohit/go-todo-list/migration/queries/"
 
 var runner *migrate.Migrate
 

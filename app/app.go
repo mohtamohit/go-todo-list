@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"practice/go-todo-list/todo"
+
+	"github.com/mohtamohit/go-todo-list/todo"
 )
 
 func PrintInstructions() {
