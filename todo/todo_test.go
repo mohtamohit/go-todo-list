@@ -6,7 +6,7 @@ import (
 	"practice/go-todo-list/db"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -22,7 +22,7 @@ func TestCreate(t *testing.T) {
 	config.Load()
 	db := db.InitDB()
 	task_id, err := Create(task)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	var task_check string
 	s, err := db.Prepare("SELECT task AS task_check FROM todo_table WHERE task_id = $1")
@@ -30,8 +30,8 @@ func TestCreate(t *testing.T) {
 	rows.Scan(&task_check)
 
 	db.Exec("truncate table todo_table;")
-	require.Equal(t, task, task_check)
-	require.NoError(t, err)
+	assert.Equal(t, task, task_check)
+	assert.NoError(t, err)
 }
 
 func TestReadForExistingTask(t *testing.T) {
@@ -46,22 +46,22 @@ func TestReadForExistingTask(t *testing.T) {
 	task, err := Read(task_id)
 
 	db.Exec("truncate table todo_table;")
-	require.NoError(t, err)
-	require.Equal(t, "read existing test task", task)
+	assert.NoError(t, err)
+	assert.Equal(t, "read existing test task", task)
 }
 
 func TestReadForNoTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
 	_, err := Read(-10000000)
-	require.EqualError(t, err, "Task Id is non-existent")
+	assert.EqualError(t, err, "Task Id is non-existent")
 }
 
 func TestShowAll(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
 	err := ShowAll()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestUpdate(t *testing.T) {
@@ -79,8 +79,8 @@ func TestUpdate(t *testing.T) {
 	statement, err = db.Prepare("SELECT task from todo_table where task_id=$1;")
 	row := statement.QueryRow(task_id)
 	row.Scan(&task)
-	require.Equal(t, "updated task", task)
-	require.NoError(t, err)
+	assert.Equal(t, "updated task", task)
+	assert.NoError(t, err)
 	db.Exec("truncate table todo_table;")
 }
 
@@ -98,6 +98,6 @@ func TestDelete(t *testing.T) {
 	statement, err = db.Prepare("SELECT COUNT(*) from todo_table where task_id=$1;")
 	rows = statement.QueryRow(task_id)
 	rows.Scan(&counter)
-	require.Zero(t, counter)
-	require.NoError(t, err)
+	assert.Zero(t, counter)
+	assert.NoError(t, err)
 }
