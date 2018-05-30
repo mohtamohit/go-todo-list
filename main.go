@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"database/sql"
 	"fmt"
 	"os"
 	"practice/go-todo-list/config"
+	"practice/go-todo-list/db"
 	"practice/go-todo-list/migration"
 	"practice/go-todo-list/todo"
 
@@ -13,7 +15,7 @@ import (
 
 func main() {
 	config.Load()
-
+	dbIns := db.InitDB()
 	app := cli.NewApp()
 	app.Name = "todo-app"
 	app.Version = "0.0.1"
@@ -44,7 +46,7 @@ func main() {
 	}
 
 	printInstructions()
-	startApp()
+	startApp(dbIns)
 }
 
 func printInstructions() {
@@ -55,7 +57,7 @@ func printInstructions() {
 	fmt.Println("To delete an existing task (eg.) : \ndelete\n<task_id>")
 }
 
-func startApp() {
+func startApp(dbIns *sql.DB) {
 	bio := bufio.NewReader(os.Stdin)
 	var choice string
 	for {
@@ -66,7 +68,7 @@ func startApp() {
 			task_byte, _, _ := bio.ReadLine()
 			task = string(task_byte)
 			// fmt.Scanln(&task)
-			task_id, err := todo.Create(task)
+			task_id, err := todo.Create(dbIns, task)
 			if err != nil {
 				fmt.Println("Couldn't create this task. Check and try again.")
 			} else {
@@ -76,7 +78,7 @@ func startApp() {
 		case "read":
 			var task_id int
 			fmt.Scanln(&task_id)
-			task, err := todo.Read(task_id)
+			task, err := todo.Read(dbIns, task_id)
 			if err != nil {
 				fmt.Println("Couldn't read this task. Check and try again.")
 			} else {
@@ -85,7 +87,7 @@ func startApp() {
 
 		case "show_all":
 			fmt.Println("In show all")
-			err := todo.ShowAll()
+			err := todo.ShowAll(dbIns)
 			if err != nil {
 				fmt.Println("Couldn't show tasks. Check and try again.")
 			}
@@ -96,7 +98,7 @@ func startApp() {
 			fmt.Scanln(&task_id)
 			task_byte, _, _ := bio.ReadLine()
 			task = string(task_byte)
-			err := todo.Update(task_id, task)
+			err := todo.Update(dbIns, task_id, task)
 			if err != nil {
 				fmt.Println("Couldn't perform this update. Check and try again.")
 			} else {
@@ -106,12 +108,15 @@ func startApp() {
 		case "delete":
 			var task_id int
 			fmt.Scanln(&task_id)
-			err := todo.Delete(task_id)
+			err := todo.Delete(dbIns, task_id)
 			if err != nil {
 				fmt.Println("Couldn't perform this delete. Check and try again.")
 			} else {
 				fmt.Println("Task with task id:", task_id, "deleted.")
 			}
+
+		default:
+			fmt.Println("Invalid option. Refer to the instructions given above.")
 		}
 	}
 }
