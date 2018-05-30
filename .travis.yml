@@ -5,5 +5,7 @@ go:
   - 1.10.x
 
 script:
-  - make restart
+  - make setup
+  - make build
+  - make db.setup
   - make test
