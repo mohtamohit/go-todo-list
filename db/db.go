@@ -19,7 +19,3 @@ func InitDB() *sql.DB {
 	}
 	return db
 }
-
-func Close() error {
-	return db.Close()
-}
