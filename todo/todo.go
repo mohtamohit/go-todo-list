@@ -12,6 +12,9 @@ func Create(task string) (int, error) {
 	defer db.Close()
 	var task_id int
 
+	if task == "" {
+		return -1, fmt.Errorf("Cannot Create an empty task")
+	}
 	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
 	if err != nil {
 		return -1, err
@@ -67,7 +70,9 @@ func ShowAll() error {
 func Update(task_id int, task string) error {
 	db := db.InitDB()
 	defer db.Close()
-
+	if task == "" {
+		return fmt.Errorf("Cannot update with an empty task")
+	}
 	statement, err := db.Prepare("UPDATE todo_table SET task = $1 WHERE task_id = $2 RETURNING task_id;")
 	if err != nil {
 		return err

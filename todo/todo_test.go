@@ -34,6 +34,13 @@ func TestCreate(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestCannotCreateEmptyTask(t *testing.T) {
+	os.Setenv("ENVIRONMENT", "test")
+	config.Load()
+	task_id, err := Create("")
+	assert.EqualError(t, err, "Cannot Create an empty task")
+	assert.Equal(t, -1, task_id)
+}
 func TestReadForExistingTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
@@ -84,6 +91,20 @@ func TestUpdate(t *testing.T) {
 	db.Exec("truncate table todo_table;")
 }
 
+func TestCannotUpdateWithEmptyTask(t *testing.T) {
+	os.Setenv("ENVIRONMENT", "test")
+	config.Load()
+	db := db.InitDB()
+	var task_id int
+	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	rows := statement.QueryRow("update test task", "2018-01-01")
+	rows.Scan(&task_id)
+
+	err = Update(task_id, "")
+	assert.EqualError(t, err, "Cannot update with an empty task")
+	db.Exec("truncate table todo_table;")
+}
+
 func TestDelete(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
@@ -98,6 +119,7 @@ func TestDelete(t *testing.T) {
 	statement, err = db.Prepare("SELECT COUNT(*) from todo_table where task_id=$1;")
 	rows = statement.QueryRow(task_id)
 	rows.Scan(&counter)
+	db.Exec("truncate table todo_table;")
 	assert.Zero(t, counter)
 	assert.NoError(t, err)
 }
