@@ -17,8 +17,8 @@ func main() {
 	defer dbIns.Close()
 
 	cliApp := cli.NewApp()
-	cliApp.Name = "todo-app"
-	cliApp.Version = "0.0.1"
+	cliApp.Name = config.AppName()
+	cliApp.Version = config.AppVersion()
 
 	cliApp.Commands = []cli.Command{
 		{
