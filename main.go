@@ -12,7 +12,10 @@ import (
 
 func main() {
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	cliApp := cli.NewApp()
 	cliApp.Name = "todo-app"
 	cliApp.Version = "0.0.1"

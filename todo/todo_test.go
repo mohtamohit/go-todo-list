@@ -22,7 +22,10 @@ const (
 func TestCreate(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	task_id, err := Create(dbIns, task)
 	assert.NoError(t, err)
 
@@ -39,7 +42,10 @@ func TestCreate(t *testing.T) {
 func TestCannotCreateEmptyTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	task_id, err := Create(dbIns, "")
 	assert.EqualError(t, err, "Cannot Create an empty task")
 	assert.Equal(t, -1, task_id)
@@ -49,6 +55,8 @@ func TestReadForExistingTask(t *testing.T) {
 	config.Load()
 
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
 	rows := statement.QueryRow("read existing test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
@@ -63,7 +71,10 @@ func TestReadForExistingTask(t *testing.T) {
 func TestReadForNoTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	_, err := Read(dbIns, -10000000)
 	assert.EqualError(t, err, "Task Id is non-existent")
 }
@@ -71,7 +82,10 @@ func TestReadForNoTask(t *testing.T) {
 func TestShowAll(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	err := ShowAll(dbIns)
 	assert.NoError(t, err)
 }
@@ -79,7 +93,10 @@ func TestShowAll(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	var task_id int
 	var task string
 	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
@@ -99,7 +116,10 @@ func TestUpdate(t *testing.T) {
 func TestCannotUpdateWithEmptyTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
 	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
@@ -113,7 +133,10 @@ func TestCannotUpdateWithEmptyTask(t *testing.T) {
 func TestDelete(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
+
 	dbIns := db.InitDB()
+	defer dbIns.Close()
+
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
 	rows := statement.QueryRow("delete test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
