@@ -28,7 +28,6 @@ func Init() {
 }
 
 func Up() error {
-	// runner. up makes it as up as possible
 	if err := runner.Up(); err != nil {
 		return fmt.Errorf("Error while migration up: %v", err)
 	}
@@ -38,15 +37,6 @@ func Up() error {
 }
 
 func Down() error {
-	// runner.steps -1 brings it down just by one step
-	// if err := runner.Steps(-1); err != nil {
-	// 	fmt.Println("Down fata")
-	// 	return err
-	// }
-	// fmt.Println("Migration Successfull")
-	// return nil
-
-	// runner.down brings it as down as possible, in this case will drop the table
 	if err := runner.Down(); err != nil {
 		return fmt.Errorf("Error while migration down: %v", err)
 	}
