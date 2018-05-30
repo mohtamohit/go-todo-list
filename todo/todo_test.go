@@ -1,10 +1,12 @@
 package todo
 
 import (
+	"fmt"
 	"os"
 	"practice/go-todo-list/config"
 	"practice/go-todo-list/db"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -49,7 +51,7 @@ func TestReadForExistingTask(t *testing.T) {
 	dbIns := db.InitDB()
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("read existing test task", "2018-01-01")
+	rows := statement.QueryRow("read existing test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
 	rows.Scan(&task_id)
 	task, err := Read(dbIns, task_id)
 
@@ -81,7 +83,7 @@ func TestUpdate(t *testing.T) {
 	var task_id int
 	var task string
 	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("update test task", "2018-01-01")
+	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
 	rows.Scan(&task_id)
 
 	err = Update(dbIns, task_id, "updated task")
@@ -100,7 +102,7 @@ func TestCannotUpdateWithEmptyTask(t *testing.T) {
 	dbIns := db.InitDB()
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("update test task", "2018-01-01")
+	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
 	rows.Scan(&task_id)
 
 	err = Update(dbIns, task_id, "")
@@ -114,7 +116,7 @@ func TestDelete(t *testing.T) {
 	dbIns := db.InitDB()
 	var task_id int
 	statement, err := dbIns.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("delete test task", "2018-01-01")
+	rows := statement.QueryRow("delete test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
 	rows.Scan(&task_id)
 
 	err = Delete(dbIns, task_id)
