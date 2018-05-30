@@ -31,11 +31,11 @@ func TestShouldLoadConfigFromEnvironment(t *testing.T) {
 	}
 
 	expectedDbConfig := DbConfig{
-		host:     "host",
-		port:     3000,
-		name:     "name",
-		password: "123",
-		user:     "user",
+		host:     "localhost",
+		port:     5432,
+		name:     "todo_db_test",
+		password: "",
+		user:     "postgres",
 	}
 
 	Load()

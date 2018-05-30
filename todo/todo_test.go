@@ -1,7 +1,6 @@
 package todo
 
 import (
-	"fmt"
 	"os"
 	"practice/go-todo-list/config"
 	"practice/go-todo-list/db"
@@ -25,16 +24,14 @@ func TestCreate(t *testing.T) {
 	task_id, err := Create(task)
 	require.NoError(t, err)
 
-	fmt.Println(task_id)
-
 	var task_check string
 	s, err := db.Prepare("SELECT task AS task_check FROM todo_table WHERE task_id = $1")
 	rows := s.QueryRow(task_id)
 	rows.Scan(&task_check)
 
+	db.Exec("truncate table todo_table;")
 	require.Equal(t, task, task_check)
 	require.NoError(t, err)
-	// db.Exec("truncate table todo_table;")
 }
 
 func TestReadForExistingTask(t *testing.T) {
@@ -42,19 +39,21 @@ func TestReadForExistingTask(t *testing.T) {
 	config.Load()
 
 	db := db.InitDB()
-	db.Exec("INSERT INTO todo_table(task_id, task, timestamp) VALUES(2, 'randomTask', '2018-05-18');")
+	var task_id int
+	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	rows := statement.QueryRow("read existing test task", "2018-01-01")
+	rows.Scan(&task_id)
+	task, err := Read(task_id)
 
-	task, err := Read(taskID)
+	db.Exec("truncate table todo_table;")
 	require.NoError(t, err)
-	require.Equal(t, task, "randomTask")
-
-	// db.Exec("truncate table todo_table;")
+	require.Equal(t, "read existing test task", task)
 }
 
 func TestReadForNoTask(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
-	_, err := Read(10000000)
+	_, err := Read(-10000000)
 	require.EqualError(t, err, "Task Id is non-existent")
 }
 
@@ -69,14 +68,18 @@ func TestUpdate(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
 	db := db.InitDB()
+	var task_id int
 	var task string
-	db.Exec("INSERT INTO todo_table(task_id, task, timestamp) VALUES(1, 'randomTask', '2018-05-18');")
+	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	rows := statement.QueryRow("update test task", "2018-01-01")
+	rows.Scan(&task_id)
 
-	err := Update(1, "updatedTask")
+	err = Update(task_id, "updated task")
 
-	row := db.QueryRow("SELECT task from todo_table where task_id=1")
+	statement, err = db.Prepare("SELECT task from todo_table where task_id=$1;")
+	row := statement.QueryRow(task_id)
 	row.Scan(&task)
-	require.Equal(t, task, "updatedTask")
+	require.Equal(t, "updated task", task)
 	require.NoError(t, err)
 	db.Exec("truncate table todo_table;")
 }
@@ -84,6 +87,17 @@ func TestUpdate(t *testing.T) {
 func TestDelete(t *testing.T) {
 	os.Setenv("ENVIRONMENT", "test")
 	config.Load()
-	err := Delete(deleteTaskID)
+	db := db.InitDB()
+	var task_id int
+	statement, err := db.Prepare("INSERT INTO todo_table(task, timestamp) VALUES($1, $2) RETURNING task_id;")
+	rows := statement.QueryRow("delete test task", "2018-01-01")
+	rows.Scan(&task_id)
+
+	err = Delete(task_id)
+	var counter int
+	statement, err = db.Prepare("SELECT COUNT(*) from todo_table where task_id=$1;")
+	rows = statement.QueryRow(task_id)
+	rows.Scan(&counter)
+	require.Zero(t, counter)
 	require.NoError(t, err)
 }
