@@ -1,0 +1,34 @@
+{{ define "Index" }}
+    {{ template "Header" }}
+
+        <table border="1">
+            <thead>
+            <tr>
+                <td>Task Id</td>
+                <td>Task</td>
+                <td>Created at</td>
+                <td>Status</td>
+            </tr>
+            </thead>
+
+            <tbody>
+            {{ range . }}
+            <tr>
+                <td>{{ .Task_id }}</td>
+                <td>{{ .Task }}</td>
+                <td>{{ .Created_at }}</td>
+                <td>{{ .Status }}</td>
+                <td><a href="/read?id={{ .Task_id }}">Update</a></td>
+                <td><a href="/markdone?id={{ .Task_id }}">Mark Done</a></td>
+                <td><a href="/delete?id={{ .Task_id }}">Delete</a></td>
+            </tr>
+            {{ end }}
+
+            </tbody>
+        </table>
+        <br><br>
+        <form method="POST" action="create">
+            <label> New Task Name: </label><input type="text" name="Task" required/><br />
+            <input type="submit" value="Create New Task" />
+        </form>
+{{ end }}

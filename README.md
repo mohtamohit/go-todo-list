@@ -40,5 +40,5 @@ export PATH
 
 ## Start
 
-1. Just run out/go-todo to start the cli app in your terminal.
-1. The instructions on how to use the app also get printed and you can further use the app accordingly.
+1. Now run `out/go-todo start_server` to start the web app.
+1. You can now visit `localhost:8080` to use this app.

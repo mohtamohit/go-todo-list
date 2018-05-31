@@ -39,6 +39,13 @@ func main() {
 				return migration.Down()
 			},
 		},
+		{
+			Name:        "start_server",
+			Description: "Rollback latest database migration",
+			Action: func(c *cli.Context) {
+				app.StartServer()
+			},
+		},
 	}
 
 	if err := cliApp.Run(os.Args); err != nil {
@@ -46,5 +53,4 @@ func main() {
 	}
 
 	app.PrintInstructions()
-	app.StartApp(dbIns)
 }
