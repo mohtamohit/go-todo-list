@@ -30,7 +30,7 @@ export PATH
 
 ## Build
 
-1. Clone the repo to $GOPATH/src/practice/ directory.
+1. Clone the repo to $GOPATH/src/github.com/mohtamohit/ directory.
 1. Run `make setup` This installs prerequisites for the build.
 1. Run `make build` This installs project dependencies and compiles the project to generate the binary.
 1. Run `make db.setup`. This will run migrations.

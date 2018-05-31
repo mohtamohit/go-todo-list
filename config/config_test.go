@@ -10,14 +10,12 @@ import (
 func TestShouldLoadConfigfile(t *testing.T) {
 	Load()
 	assert.NotNil(t, Port())
-	assert.NotEmpty(t, Log().LogLevel())
 	assert.NotEmpty(t, Db())
 }
 
 func TestShouldLoadConfigFromEnvironment(t *testing.T) {
 	configEnv := map[string]string{
 		"APP_PORT":          "8888",
-		"LOG_LEVEL":         "debug",
 		"DATABASE_HOST":     "host",
 		"DATABASE_PORT":     "3000",
 		"DATABASE_USER":     "user",
@@ -40,6 +38,5 @@ func TestShouldLoadConfigFromEnvironment(t *testing.T) {
 
 	Load()
 	assert.Equal(t, 8888, Port())
-	assert.Equal(t, "debug", Log().LogLevel())
 	assert.Equal(t, expectedDbConfig, Db())
 }

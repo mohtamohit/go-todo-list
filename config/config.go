@@ -12,7 +12,6 @@ var appConfig Config
 
 type Config struct {
 	port       int
-	log        LogConfig
 	appName    string
 	appVersion string
 	db         DBConfig
@@ -20,7 +19,6 @@ type Config struct {
 
 func Load() {
 	viper.SetDefault("APP_PORT", "8080")
-	viper.SetDefault("LOG_LEVEL", "error")
 
 	viper.SetConfigName("application")
 	if os.Getenv("ENVIRONMENT") == "test" {
@@ -39,9 +37,6 @@ func Load() {
 		port:       extractIntValue("APP_PORT"),
 		appVersion: extractStringValue("APP_VERSION"),
 		appName:    extractStringValue("APP_NAME"),
-		log: LogConfig{
-			logLevel: extractStringValue("LOG_LEVEL"),
-		},
 		db: DBConfig{
 			host:     extractStringValue("DB_HOST"),
 			port:     extractIntValue("DB_PORT"),
@@ -54,10 +49,6 @@ func Load() {
 
 func Port() int {
 	return appConfig.port
-}
-
-func Log() LogConfig {
-	return appConfig.log
 }
 
 func Db() DBConfig {
