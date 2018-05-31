@@ -5,17 +5,12 @@ import (
 
 	"github.com/mohtamohit/go-todo-list/app"
 	"github.com/mohtamohit/go-todo-list/config"
-	"github.com/mohtamohit/go-todo-list/db"
 	"github.com/mohtamohit/go-todo-list/migration"
 	"github.com/urfave/cli"
 )
 
 func main() {
 	config.Load()
-
-	dbIns := db.InitDB()
-	defer dbIns.Close()
-
 	cliApp := cli.NewApp()
 	cliApp.Name = config.AppName()
 	cliApp.Version = config.AppVersion()
@@ -40,10 +35,17 @@ func main() {
 			},
 		},
 		{
-			Name:        "start_server",
-			Description: "Rollback latest database migration",
+			Name:        "web",
+			Description: "Start the web app",
 			Action: func(c *cli.Context) {
 				app.StartServer()
+			},
+		},
+		{
+			Name:        "cli",
+			Description: "Launch the cli app",
+			Action: func(c *cli.Context) {
+				app.StartCLI()
 			},
 		},
 	}
