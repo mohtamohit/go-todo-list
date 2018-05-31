@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 
@@ -59,10 +60,10 @@ func TestReadForExistingTask(t *testing.T) {
 	defer dbIns.Close()
 
 	var task_id int
-	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("read existing test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
+	rows := statement.QueryRow("read existing test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
 	rows.Scan(&task_id)
-	task, err := Read(dbIns, task_id)
+	task, _, _, err := Read(dbIns, task_id)
 
 	dbIns.Exec("truncate table tasks;")
 	assert.NoError(t, err)
@@ -76,7 +77,7 @@ func TestReadForNoTask(t *testing.T) {
 	dbIns := db.InitDB()
 	defer dbIns.Close()
 
-	_, err := Read(dbIns, -10000000)
+	_, _, _, err := Read(dbIns, -10000000)
 	assert.EqualError(t, err, "Task Id is non-existent")
 }
 
@@ -100,11 +101,12 @@ func TestUpdate(t *testing.T) {
 
 	var task_id int
 	var task string
-	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
+	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
 	rows.Scan(&task_id)
 
 	err = Update(dbIns, task_id, "updated task")
+	assert.NoError(t, err)
 
 	statement, err = dbIns.Prepare("SELECT task from tasks where task_id=$1;")
 	row := statement.QueryRow(task_id)
@@ -122,13 +124,48 @@ func TestCannotUpdateWithEmptyTask(t *testing.T) {
 	defer dbIns.Close()
 
 	var task_id int
-	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
+	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
 	rows.Scan(&task_id)
 
 	err = Update(dbIns, task_id, "")
 	assert.EqualError(t, err, "Cannot update with an empty task")
 	dbIns.Exec("truncate table tasks;")
+}
+
+func TestMarkDone(t *testing.T) {
+	os.Setenv("ENVIRONMENT", "test")
+	config.Load()
+
+	dbIns := db.InitDB()
+	defer dbIns.Close()
+
+	var task_id int
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
+	rows := statement.QueryRow("update test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
+	rows.Scan(&task_id)
+
+	err = MarkDone(dbIns, task_id)
+	assert.NoError(t, err)
+
+	var status bool
+	statement, err = dbIns.Prepare("SELECT status from tasks where task_id=$1;")
+	row := statement.QueryRow(task_id)
+	row.Scan(&status)
+	assert.Equal(t, true, status)
+	assert.NoError(t, err)
+	dbIns.Exec("truncate table tasks;")
+}
+
+func TestMarkDoneNotExistingTask(t *testing.T) {
+	os.Setenv("ENVIRONMENT", "test")
+	config.Load()
+
+	dbIns := db.InitDB()
+	defer dbIns.Close()
+
+	err := MarkDone(dbIns, -100)
+	assert.EqualError(t, err, sql.ErrNoRows.Error())
 }
 
 func TestDelete(t *testing.T) {
@@ -139,8 +176,8 @@ func TestDelete(t *testing.T) {
 	defer dbIns.Close()
 
 	var task_id int
-	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
-	rows := statement.QueryRow("delete test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
+	rows := statement.QueryRow("delete test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
 	rows.Scan(&task_id)
 
 	err = Delete(dbIns, task_id)
