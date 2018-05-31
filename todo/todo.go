@@ -3,114 +3,86 @@ package todo
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = ""
-	dbname   = "todo_db"
-)
-
-func dbConn(user, password, dbname string) *sql.DB {
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		user, password, dbname)
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Encountered error: ", err)
-		panic(err)
-	}
-	return db
-}
-
-func Create(task string) (int, error) {
-	db := dbConn(user, password, dbname)
-	defer db.Close()
-
+func Create(dbIns *sql.DB, task string) (int, error) {
 	var task_id int
-	statement, err := db.Prepare("INSERT INTO todo_db(task) VALUES($1);")
-	if err != nil {
-		fmt.Println("Encountered Error: ", err)
-		return 0, err
+
+	if task == "" {
+		return -1, fmt.Errorf("Cannot Create an empty task")
 	}
-	row := statement.QueryRow(task)
-	row.Scan(&task_id)
-	return task_id, err
+	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at) VALUES($1, $2) RETURNING task_id;")
+	if err != nil {
+		return -1, err
+	}
+	rows := statement.QueryRow(task, fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()))
+	rows.Scan(&task_id)
+
+	return task_id, nil
 }
 
-func Read(task_id int) (string, error) {
-	db := dbConn(user, password, dbname)
-	defer db.Close()
+func Read(dbIns *sql.DB, task_id int) (string, error) {
 
-	statement, err := db.Prepare("SELECT task FROM todo_db WHERE task_id= $1;")
+	statement, err := dbIns.Prepare("SELECT task FROM tasks WHERE task_id= $1;")
 	if err != nil {
-		fmt.Println("Enountered error: ", err)
 		return "", err
 	}
 	row := statement.QueryRow(task_id)
 	var task string
-	row.Scan(&task)
+	err = row.Scan(&task)
+
 	if task == "" {
 		return task, fmt.Errorf("Task Id is non-existent")
 	}
 	return task, err
 }
 
-func ShowAll() error {
-	db := dbConn(user, password, dbname)
-	defer db.Close()
+func ShowAll(dbIns *sql.DB) error {
 
-	statement, err := db.Prepare("SELECT task FROM todo_db;")
+	statement, err := dbIns.Prepare("SELECT task_id, task FROM tasks;")
 	if err != nil {
-		fmt.Println("Enountered error: ", err)
 		return err
 	}
 	rows, err := statement.Query()
 	if err != nil {
-		fmt.Println("Encountered error: ", err)
 		return err
 	}
 
 	var task string
+	var task_id int
 	i := 0
 	for rows.Next() {
 		i++
-		rows.Scan(&task)
-		fmt.Println("", i, " ", task)
+		rows.Scan(&task_id, &task)
+		fmt.Println(task_id, " ", task)
 	}
 	return err
 }
 
-func Update(task_id int, task string) error {
-	db := dbConn(user, password, dbname)
-	defer db.Close()
+func Update(dbIns *sql.DB, task_id int, task string) error {
 
-	statement, err := db.Prepare("UPDATE todo_db SET task = $1 WHERE task_id = $2;")
+	if task == "" {
+		return fmt.Errorf("Cannot update with an empty task")
+	}
+	statement, err := dbIns.Prepare("UPDATE tasks SET task = $1 WHERE task_id = $2 RETURNING task_id;")
 	if err != nil {
-		fmt.Println("Enountered error: ", err)
 		return err
 	}
 	row := statement.QueryRow(task, task_id)
-	row.Scan(&task_id)
-	return err
+	return row.Scan(&task_id)
 }
 
-func Delete(task_id int) error {
-	db := dbConn(user, password, dbname)
-	defer db.Close()
+func Delete(dbIns *sql.DB, task_id int) error {
 
-	statement, err := db.Prepare("DELETE FROM todo_db WHERE task_id = $1;")
+	statement, err := dbIns.Prepare("DELETE FROM tasks WHERE task_id = $1 RETURNING task_id;")
 
 	if err != nil {
-		fmt.Println("Enountered error: ", err)
 		return err
 	}
 
 	row := statement.QueryRow(task_id)
-	row.Scan(&task_id)
-
-	return err
+	return row.Scan(&task_id)
 }
