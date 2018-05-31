@@ -63,11 +63,12 @@ func TestReadForExistingTask(t *testing.T) {
 	statement, err := dbIns.Prepare("INSERT INTO tasks(task, created_at, status) VALUES($1, $2, $3) RETURNING task_id;")
 	rows := statement.QueryRow("read existing test task", fmt.Sprintf("%v-%d-%v", time.Now().Year(), int(time.Now().Month()), time.Now().Day()), false)
 	rows.Scan(&task_id)
-	task, _, _, err := Read(dbIns, task_id)
+
+	ts, err := Read(dbIns, task_id)
 
 	dbIns.Exec("truncate table tasks;")
 	assert.NoError(t, err)
-	assert.Equal(t, "read existing test task", task)
+	assert.Equal(t, "read existing test task", ts.Task)
 }
 
 func TestReadForNoTask(t *testing.T) {
@@ -77,7 +78,7 @@ func TestReadForNoTask(t *testing.T) {
 	dbIns := db.InitDB()
 	defer dbIns.Close()
 
-	_, _, _, err := Read(dbIns, -10000000)
+	_, err := Read(dbIns, -10000000)
 	assert.EqualError(t, err, "Task Id is non-existent")
 }
 
@@ -88,7 +89,7 @@ func TestShowAll(t *testing.T) {
 	dbIns := db.InitDB()
 	defer dbIns.Close()
 
-	err := ShowAll(dbIns)
+	_, err := ShowAll(dbIns)
 	assert.NoError(t, err)
 }
 
