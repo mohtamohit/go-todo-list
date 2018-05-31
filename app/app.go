@@ -38,24 +38,23 @@ func StartApp(dbIns *sql.DB) {
 		case "read":
 			var task_id int
 			fmt.Scanln(&task_id)
-			task, created_at, status, err := todo.Read(dbIns, task_id)
-			var doneOrNot string
-			if status {
-				doneOrNot = "Completed"
-			} else {
-				doneOrNot = "Not Completed"
-			}
+			ts, err := todo.Read(dbIns, task_id)
+
 			if err != nil {
 				fmt.Println("Couldn't read this task. Check and try again.")
 			} else {
-				fmt.Println(task_id, " ", task, " ", created_at, " ", doneOrNot)
+				fmt.Println(ts.Task_id, " ", ts.Task, " ", ts.Created_at, " ", ts.Status)
 			}
 
 		case "show_all":
 			fmt.Println("In show all")
-			err := todo.ShowAll(dbIns)
+			ts, err := todo.ShowAll(dbIns)
 			if err != nil {
 				fmt.Println("Couldn't show tasks. Check and try again.")
+			} else {
+				for _, t := range ts {
+					fmt.Println(t.Task_id, t.Task, t.Created_at, t.Status)
+				}
 			}
 
 		case "update":
