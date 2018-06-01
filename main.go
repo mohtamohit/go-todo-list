@@ -54,5 +54,4 @@ func main() {
 		panic(err)
 	}
 
-	app.PrintInstructions()
 }
