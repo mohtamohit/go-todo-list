@@ -1,0 +1,15 @@
+{{ define "Read" }}
+  {{ template "Header" }}
+    <h2> Task Id: {{ .Task_id }} </h2>
+      <p>Task: {{ .Task }}</p>
+      <p>Created at:  {{ .Created_at }}</p>
+      <p>Status:  {{ .Status }}</p>
+      <br />
+
+    <form method="POST" action="update">
+      <input type="hidden" name="Task_id" value="{{ .Task_id }}" />
+      <label> Updated Task Name: </label><input type="text" name="Task" required /><br />
+      <input type="submit" value="Update Task" />
+    </form>
+
+{{ end }}
