@@ -1,7 +1,6 @@
 language: go
 
 go:
-  - 1.9.x
   - 1.10.x
 
 script:
@@ -9,3 +8,9 @@ script:
   - make build
   - make db.setup
   - make test
+
+deploy:
+  provider: heroku
+  buildpack: https://github.com/kr/heroku-buildpack-go.git
+  api_key:
+    secure: "qgW6mgLngy8gFzN0oEN/YHnS+LyMSl+4cD0SRAW5etVcJ637a28jvUNJD4n00S9CPJGvlNZS3AptMegVIrJWuE2kp9ZGR1fGjiH8hG6wmmVU1nzQFJPQloMXIEj+LTUkW8XvYjIC1BQb11ctIA7NyOGNWl8ysqwps2+aCr+wGlkWSKX7fjTNOUj2ecVq8K3EBGtlhzJzqhj9WnSne4HicsmK2TvCyoTX63ywfT/9YLLi1JZMlz8r7+z/dsgCSxGZ5k8E/kj5U/iEI+NBWG5bZ36Akgf7JgRisqdMxdsxAq5uiPd66Io8JQVnyf7v09dhky9knMnz1gGQQEyzfi/uoz8A3WG4c/yDXugu3Cqw9VQeoHypm9aL2AXk1eWopu67xC5oZ3QlPEmenavB8MK2tn7fejJj1cyOhvQZfbdH9RO/BNWg6iyVu8cf/sarzPp1D5qFTNn8MRcSJfshyYVVP/yYS9kzBEEAf9n5N7HAbdL40yrGEzzsNNtKqMAvsDfGmlNHiin7qgsppwgZZ6WA+ji/WfwlhweZvWr2UVelznWi7bZeCjStMv5kWwCmDi/5LRWuIJeuC+UW3n3je3ElZz7swg29cX4/LsxlS2iqS4XjImWI+ugGt8sQp3MRAZxqMbZq7ib6Oe8LDbilQPSGBD3svLOm6qc7+afEbQt/7N4="

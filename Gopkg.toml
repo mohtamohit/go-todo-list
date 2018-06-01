@@ -1,3 +1,9 @@
+[metadata.heroku]
+  root-package = "github.com/mohtamohit/go-todo-list"
+  install = [ "./..."]
+  ensure = "true"
+  additional-tools = ["github.com/golang-migrate/migrate"]
+
 [[constraint]]
   name = "github.com/spf13/viper"
   version = "1.0.0"

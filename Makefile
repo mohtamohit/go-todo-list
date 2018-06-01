@@ -8,6 +8,7 @@ TEST_DB_NAME = "todo_test"
 TEST_DB_PORT = 5432
 DB_PORT = 5432
 APP_EXECUTEABLE = "out/todo"
+APP_EXECUTEABLE_LINUX = "out/linux/todo"
 
 setup:
 	go get -u github.com/golang/dep/cmd/dep
@@ -20,7 +21,9 @@ update-deps:
 
 compile: 
 	mkdir -p out/
-	go build -o $(APP_EXECUTEABLE) 
+	go build -o $(APP_EXECUTEABLE)
+	GOOS=linux GOARCH=amd64 go build -o $(APP_EXECUTEABLE_LINUX)
+
 
 build: build-deps compile fmt vet
 

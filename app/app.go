@@ -22,14 +22,14 @@ func PrintInstructions() {
 }
 
 func StartServer() {
-	log.Println("Server started on: http://localhost:8080")
+	log.Println("Server started on: http://localhost:80")
 	http.HandleFunc("/", handler.Index)
 	http.HandleFunc("/read", handler.Read)
 	http.HandleFunc("/create", handler.Create)
 	http.HandleFunc("/update", handler.Update)
 	http.HandleFunc("/delete", handler.Delete)
 	http.HandleFunc("/markdone", handler.MarkDone)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 func StartCLI() {
